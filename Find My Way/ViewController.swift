@@ -13,6 +13,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     var locationManager = CLLocationManager()
+    var currUserLocation = CLLocationCoordinate2D()
     var byAuto : Bool = true
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,15 +101,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 }}
         if mapView.annotations.count >= 1 {
             mapView.removeAnnotations(mapView.annotations)
+            mapView.removeOverlays(mapView.overlays)
         }
         mapView.addAnnotation(annotation)
+        //MKPinAnnotationView
         
         // Let user choose transport type
         promptTransportType()
         
         if byAuto == true { print("User is driving") } else { print("User is walking") }
-    
-          
+        print("Current User Location \(currUserLocation)")
+        print("Destination \(annotation.coordinate)")
+        mapView.delegate = self
+        setRoute(source: currUserLocation, destination: annotation.coordinate)
     }
     
     func promptTransportType() {
@@ -132,6 +137,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         // Retrive the user location
         let userLocation : CLLocation = locations[0]
+        self.currUserLocation = userLocation.coordinate
         
         // Set location latitude and longitude
         let latitude = userLocation.coordinate.latitude
@@ -192,5 +198,50 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
 
+    func setRoute(source: CLLocationCoordinate2D, destination: CLLocationCoordinate2D) {
+        let sourcePlacemark = MKPlacemark(coordinate: source, addressDictionary: nil)
+        let destinationPlacemark = MKPlacemark(coordinate: destination, addressDictionary: nil)
+                                
+        let sourceMapItem = MKMapItem(placemark: sourcePlacemark)
+        let destinationMapItem = MKMapItem(placemark: destinationPlacemark)
+                                
+        let directionRequest = MKDirections.Request()
+        directionRequest.source = sourceMapItem
+        directionRequest.destination = destinationMapItem
+        directionRequest.transportType = byAuto ? .automobile : .walking
+                                
+        // Calculate the direction
+        let directions = MKDirections(request: directionRequest)
+        directions.calculate {
+            (response, error) -> Void in
+                                    
+            guard let response = response else {
+                if let error = error {
+                    print("Error: \(error)")
+                }
+                    return
+            }
+                                    
+            let route = response.routes[0]
+            self.mapView.addOverlay((route.polyline), level: MKOverlayLevel.aboveRoads)
+                                    
+            let rect = route.polyline.boundingMapRect
+            self.mapView.setRegion(MKCoordinateRegion(rect), animated: true)
+        }
+    }
+}
+
+extension ViewController: MKMapViewDelegate {
+    // This function is needed to add overlays
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if overlay is MKPolyline {
+            //print("Called poly line")
+            let renderer = MKPolylineRenderer(overlay: overlay)
+            renderer.strokeColor = UIColor.orange
+            renderer.lineWidth = 3
+            return renderer
+        }
+        return MKOverlayRenderer()
+    }
 }
 
