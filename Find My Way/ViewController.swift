@@ -14,6 +14,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: MKMapView!
     var locationManager = CLLocationManager()
     var currUserLocation = CLLocationCoordinate2D()
+    var toCoordinate = CLLocationCoordinate2D()
+    var isCoordinatesSet : Bool = false
+    
     //var byAuto : Bool = true
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,32 +32,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Can be set on the MKMapView Properties
         mapView.showsUserLocation = true
         
-//        // Define Latitude and Longitude of a specific location ex. Ontario
-//        let latidude : CLLocationDegrees = 43.64//51.25//43.64
-//        let longitude: CLLocationDegrees = -79.38//-85.32//-79.38
-//
-//        // Define the Deltas of Latitude and Longitude
-//        let latDelta : CLLocationDegrees = 1.0
-//        let longDelta : CLLocationDegrees = 1.0
-//
-//        // Define the Span
-//        let span = MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: longDelta)
-//
-//        // Define the location
-//        let location = CLLocationCoordinate2D(latitude: latidude, longitude: longitude)
-//
-//        // Define the region
-//        let region = MKCoordinateRegion(center: location, span: span)
-//
-//        // Set MapView with the set region
-//        mapView.setRegion(region, animated: true)
-        
         // Add a double tap gesture
         let uidtgr = UITapGestureRecognizer(target: self, action: #selector(doubleTap))
         uidtgr.numberOfTapsRequired = 2
         mapView.addGestureRecognizer(uidtgr)
-        
-        
+    
     }
 
     @objc func doubleTap(gestureRecognizer : UIGestureRecognizer) {
@@ -104,22 +86,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         mapView.addAnnotation(annotation)
         //MKPinAnnotationView
         
-        // Let user choose transport type
-        mapView.delegate = self
-        promptTransportType(destination: annotation.coordinate)
+        // Set destination coordinates
+        self.toCoordinate = annotation.coordinate
+        isCoordinatesSet = true
     }
     
-    func promptTransportType(destination: CLLocationCoordinate2D) {
+    func promptTransportType() {
         let alertController = UIAlertController(title: "Transportation", message: "Choose transportation type", preferredStyle: .alert)
              
         let autoAction = UIAlertAction(title: "Auto 🚗", style: .default) { (action) in
             print("DEBUG: User is driving")
-            self.setRoute(source: self.currUserLocation, destination: destination, byAuto: true)
+            self.setRoute(source: self.currUserLocation, destination: self.toCoordinate, byAuto: true)
         }
              
         let walkAction = UIAlertAction(title: "Walk 🚶🏽", style: .default) { (action) in
             print("DEBUG: User is walking")
-            self.setRoute(source: self.currUserLocation, destination: destination, byAuto: false)
+            self.setRoute(source: self.currUserLocation, destination: self.toCoordinate, byAuto: false)
         }
 
         alertController.addAction(autoAction)
@@ -128,6 +110,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         self.present(alertController, animated: true, completion: nil)
     }
     
+    @IBAction func findmyway(_ sender: UIButton) {
+        print("DEBUG: Find My Way!")
+        
+        if isCoordinatesSet == false {
+            let alertController = UIAlertController(title: "Error", message: "Coordinates not yet set", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+            alertController.addAction(okAction)
+            self.present(alertController, animated: true, completion: nil)
+        } else {
+            // Let user choose transport type
+            mapView.delegate = self
+            promptTransportType()
+        }
+        
+    }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         // Retrive the user location

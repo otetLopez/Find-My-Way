@@ -15,29 +15,33 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Find My Way" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SfI-XF-T9X">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ywL-k5-7cA">
+                                <rect key="frame" x="0.0" y="124" width="414" height="738"/>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6a9-o5-fAL">
                                 <rect key="frame" x="0.0" y="44" width="414" height="80"/>
                                 <color key="backgroundColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="80" id="AEY-ju-Cgr"/>
+                                    <constraint firstAttribute="height" constant="80" id="Xlp-7a-ngs"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="italicSystem" pointSize="19"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ywL-k5-7cA">
-                                <rect key="frame" x="0.0" y="124" width="414" height="738"/>
-                            </mapView>
+                                <fontDescription key="fontDescription" type="italicSystem" pointSize="22"/>
+                                <state key="normal" title="Find My Way">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="findmyway:" destination="BYZ-38-t0r" eventType="touchUpInside" id="p24-DY-P4O"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="SfI-XF-T9X" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="D1u-dU-G3y"/>
-                            <constraint firstItem="ywL-k5-7cA" firstAttribute="top" secondItem="SfI-XF-T9X" secondAttribute="bottom" id="DQX-W9-j0s"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ywL-k5-7cA" secondAttribute="trailing" id="EX5-j1-bgE"/>
-                            <constraint firstItem="ywL-k5-7cA" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="OCx-rH-nzw"/>
-                            <constraint firstItem="SfI-XF-T9X" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="UX1-nv-PDW"/>
-                            <constraint firstItem="SfI-XF-T9X" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="hPu-7V-2gO"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ywL-k5-7cA" secondAttribute="bottom" id="vFq-ol-MJO"/>
+                            <constraint firstItem="ywL-k5-7cA" firstAttribute="top" secondItem="6a9-o5-fAL" secondAttribute="bottom" id="6Q9-ay-u0z"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="6a9-o5-fAL" secondAttribute="trailing" id="GLz-Za-eSJ"/>
+                            <constraint firstItem="6a9-o5-fAL" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="JzM-7i-ZkW"/>
+                            <constraint firstItem="ywL-k5-7cA" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="OeJ-xf-QSO"/>
+                            <constraint firstItem="6a9-o5-fAL" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Zso-3A-Erb"/>
+                            <constraint firstItem="ywL-k5-7cA" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="eLz-v8-dhQ"/>
+                            <constraint firstItem="ywL-k5-7cA" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="mqL-Et-1vw"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
