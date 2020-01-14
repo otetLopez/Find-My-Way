@@ -16,6 +16,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var currUserLocation = CLLocationCoordinate2D()
     var toCoordinate = CLLocationCoordinate2D()
     var isCoordinatesSet : Bool = false
+    var currSpan : Double = 0.05
+    
+//    var zoomingIn = false
+//    var zoomingAnnotation = MKAnnotation()
     
     //var byAuto : Bool = true
     override func viewDidLoad() {
@@ -36,6 +40,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         let uidtgr = UITapGestureRecognizer(target: self, action: #selector(doubleTap))
         uidtgr.numberOfTapsRequired = 2
         mapView.addGestureRecognizer(uidtgr)
+        
+        // Add a long press gesture for zooming
+        let uilpgr = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
+        mapView.addGestureRecognizer(uilpgr)
     
     }
 
@@ -89,6 +97,27 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Set destination coordinates
         self.toCoordinate = annotation.coordinate
         isCoordinatesSet = true
+    }
+    
+    @objc func longPress(gestureRecognizer : UIGestureRecognizer) {
+        guard let longPress = gestureRecognizer as? UILongPressGestureRecognizer else
+          { return }
+
+          if longPress.state == .ended { // When gesture end
+            let touchPoint = gestureRecognizer.location(in: mapView)
+            let coordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
+            // PIN Location: Add annotation
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            
+            let location = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            
+            currSpan -= 0.02
+            let zoomOutRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: currSpan, longitudeDelta: currSpan))
+            //zoomingIn = true
+            //zoomingAnnotation = annotation
+            mapView.setRegion(zoomOutRegion, animated: true)
+        }
     }
     
     func promptTransportType() {
