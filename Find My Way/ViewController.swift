@@ -14,7 +14,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: MKMapView!
     var locationManager = CLLocationManager()
     var currUserLocation = CLLocationCoordinate2D()
-    var byAuto : Bool = true
+    //var byAuto : Bool = true
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -67,8 +67,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
             
-        
-            
         // Get address for touch coordinates.
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
             CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
@@ -107,24 +105,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         //MKPinAnnotationView
         
         // Let user choose transport type
-        promptTransportType()
-        
-        if byAuto == true { print("User is driving") } else { print("User is walking") }
-        print("Current User Location \(currUserLocation)")
-        print("Destination \(annotation.coordinate)")
-        mapView.delegate = self
-        setRoute(source: currUserLocation, destination: annotation.coordinate)
+        promptTransportType(destination: annotation.coordinate)
     }
     
-    func promptTransportType() {
+    func promptTransportType(destination: CLLocationCoordinate2D) {
         let alertController = UIAlertController(title: "Transportation", message: "Choose transportation type", preferredStyle: .alert)
              
         let autoAction = UIAlertAction(title: "Auto 🚗", style: .default) { (action) in
-            self.byAuto = true
+            self.mapView.delegate = self
+            print("DEBUG: User is driving")
+            self.setRoute(source: self.currUserLocation, destination: destination, byAuto: true)
         }
              
         let walkAction = UIAlertAction(title: "Walk 🚶🏽", style: .default) { (action) in
-            self.byAuto = false
+            self.mapView.delegate = self
+            print("DEBUG: User is walking")
+            self.setRoute(source: self.currUserLocation, destination: destination, byAuto: false)
         }
 
         alertController.addAction(autoAction)
@@ -198,7 +194,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
 
-    func setRoute(source: CLLocationCoordinate2D, destination: CLLocationCoordinate2D) {
+    func setRoute(source: CLLocationCoordinate2D, destination: CLLocationCoordinate2D, byAuto : Bool) {
         let sourcePlacemark = MKPlacemark(coordinate: source, addressDictionary: nil)
         let destinationPlacemark = MKPlacemark(coordinate: destination, addressDictionary: nil)
                                 
