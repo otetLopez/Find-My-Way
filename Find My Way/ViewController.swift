@@ -13,6 +13,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     var locationManager = CLLocationManager()
+    var byAuto : Bool = true
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -97,12 +98,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             
                     }
                 }}
-            if mapView.annotations.count >= 1 {
-                mapView.removeAnnotations(mapView.annotations)
-            }
-            mapView.addAnnotation(annotation)
-          
+        if mapView.annotations.count >= 1 {
+            mapView.removeAnnotations(mapView.annotations)
         }
+        mapView.addAnnotation(annotation)
+        
+        // Let user choose transport type
+        promptTransportType()
+        
+        if byAuto == true { print("User is driving") } else { print("User is walking") }
+    
+          
+    }
+    
+    func promptTransportType() {
+        let alertController = UIAlertController(title: "Transportation", message: "Choose transportation type", preferredStyle: .alert)
+             
+        let autoAction = UIAlertAction(title: "Auto 🚗", style: .default) { (action) in
+            self.byAuto = true
+        }
+             
+        let walkAction = UIAlertAction(title: "Walk 🚶🏽", style: .default) { (action) in
+            self.byAuto = false
+        }
+
+        alertController.addAction(autoAction)
+        alertController.addAction(walkAction)
+                 
+        self.present(alertController, animated: true, completion: nil)
+    }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
