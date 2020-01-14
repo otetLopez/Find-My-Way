@@ -105,6 +105,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         //MKPinAnnotationView
         
         // Let user choose transport type
+        mapView.delegate = self
         promptTransportType(destination: annotation.coordinate)
     }
     
@@ -112,13 +113,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         let alertController = UIAlertController(title: "Transportation", message: "Choose transportation type", preferredStyle: .alert)
              
         let autoAction = UIAlertAction(title: "Auto 🚗", style: .default) { (action) in
-            self.mapView.delegate = self
             print("DEBUG: User is driving")
             self.setRoute(source: self.currUserLocation, destination: destination, byAuto: true)
         }
              
         let walkAction = UIAlertAction(title: "Walk 🚶🏽", style: .default) { (action) in
-            self.mapView.delegate = self
             print("DEBUG: User is walking")
             self.setRoute(source: self.currUserLocation, destination: destination, byAuto: false)
         }
