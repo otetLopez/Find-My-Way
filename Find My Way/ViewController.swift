@@ -11,6 +11,7 @@ import MapKit
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
 
+    @IBOutlet weak var transpoInfor: UILabel!
     @IBOutlet weak var mapView: MKMapView!
     var locationManager = CLLocationManager()
     var currUserLocation = CLLocationCoordinate2D()
@@ -91,8 +92,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             mapView.removeAnnotations(mapView.annotations)
             mapView.removeOverlays(mapView.overlays)
         }
+        
+        mapView.delegate = self
         mapView.addAnnotation(annotation)
-        //MKPinAnnotationView
         
         // Set destination coordinates
         self.toCoordinate = annotation.coordinate
@@ -112,11 +114,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             
             let location = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
             
-            currSpan -= 0.02
-            let zoomOutRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: currSpan, longitudeDelta: currSpan))
-            //zoomingIn = true
-            //zoomingAnnotation = annotation
-            mapView.setRegion(zoomOutRegion, animated: true)
+            let alertController = UIAlertController(title: "Zoom View", message: "Choose from options", preferredStyle: .alert)
+            
+            let outAction = UIAlertAction(title: "Out", style: .default) { (action) in
+                self.currSpan += 0.02
+                let zoomOutRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: self.currSpan, longitudeDelta: self.currSpan))
+                self.mapView.setRegion(zoomOutRegion, animated: true) }
+
+            let inAction = UIAlertAction(title: "In", style: .default) { (action) in
+                if (self.currSpan - 0.02) > 0 {
+                    self.currSpan -= 0.02 }
+                let zoomOutRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: self.currSpan, longitudeDelta: self.currSpan))
+                self.mapView.setRegion(zoomOutRegion, animated: true) }
+
+            alertController.addAction(outAction)
+            alertController.addAction(inAction)
+            self.present(alertController, animated: true, completion: nil)
         }
     }
     
@@ -125,11 +138,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
              
         let autoAction = UIAlertAction(title: "Auto 🚗", style: .default) { (action) in
             print("DEBUG: User is driving")
+            self.transpoInfor.text = "Showing route when driving"
             self.setRoute(source: self.currUserLocation, destination: self.toCoordinate, byAuto: true)
         }
              
         let walkAction = UIAlertAction(title: "Walk 🚶🏽", style: .default) { (action) in
             print("DEBUG: User is walking")
+            self.transpoInfor.text = "Showing route when walking"
             self.setRoute(source: self.currUserLocation, destination: self.toCoordinate, byAuto: false)
         }
 
@@ -150,6 +165,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         } else {
             // Let user choose transport type
             mapView.delegate = self
+            transpoInfor.text = ""
             promptTransportType()
         }
         
@@ -176,50 +192,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         // Print user location coordinates
         print(userLocation)
-        
-        // Find the user location address using GeoCoder
-        CLGeocoder().reverseGeocodeLocation(userLocation) { (placemarks, error) in
-            if let error = error {
-                print(error)
-            } else {
-                if let placemark = placemarks?[0] {
-                    var subThoroufare = ""
-                    if placemark.subThoroughfare != nil {
-                        subThoroufare = placemark.subThoroughfare!
-                    }
-                    
-                    var thoroufare = ""
-                    if placemark.thoroughfare != nil {
-                        thoroufare = placemark.thoroughfare!
-                    }
-                    
-                    var subLocality = ""
-                    if placemark.subLocality != nil {
-                        subLocality = placemark.subLocality!
-                    }
-                    
-                    var subAdministrativeArea = ""
-                    if placemark.subAdministrativeArea != nil {
-                        subAdministrativeArea = placemark.subAdministrativeArea!
-                    }
-                    
-                    var postalCode = ""
-                    if placemark.postalCode != nil {
-                        postalCode = placemark.postalCode!
-                    }
-                    
-                    var country = ""
-                    if placemark.country != nil {
-                        country = placemark.country!
-                    }
-                    
-                    print("\(subThoroufare) \(thoroufare)\n\(subLocality) \(subAdministrativeArea)\n\(postalCode) \(country)")
-                }
-            }
-        }
     }
 
     func setRoute(source: CLLocationCoordinate2D, destination: CLLocationCoordinate2D, byAuto : Bool) {
+        mapView.removeOverlays(mapView.overlays)
         let sourcePlacemark = MKPlacemark(coordinate: source, addressDictionary: nil)
         let destinationPlacemark = MKPlacemark(coordinate: destination, addressDictionary: nil)
                                 
@@ -253,6 +229,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 }
 
 extension ViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation {
+            return nil
+        }
+
+        let pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+            pinView.canShowCallout = true
+            pinView.animatesDrop = true
+
+        return pinView
+    }
+    
     // This function is needed to add overlays
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if overlay is MKPolyline {

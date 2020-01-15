@@ -32,13 +32,25 @@
                                     <action selector="findmyway:" destination="BYZ-38-t0r" eventType="touchUpInside" id="p24-DY-P4O"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Om-bc-vb1">
+                                <rect key="frame" x="20" y="159" width="374" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="vo7-vh-Gyi"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="ywL-k5-7cA" firstAttribute="top" secondItem="6a9-o5-fAL" secondAttribute="bottom" id="6Q9-ay-u0z"/>
+                            <constraint firstItem="7Om-bc-vb1" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="6Xb-Uh-PRn"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="6a9-o5-fAL" secondAttribute="trailing" id="GLz-Za-eSJ"/>
+                            <constraint firstItem="7Om-bc-vb1" firstAttribute="centerX" secondItem="6a9-o5-fAL" secondAttribute="centerX" id="JcP-gl-soB"/>
                             <constraint firstItem="6a9-o5-fAL" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="JzM-7i-ZkW"/>
                             <constraint firstItem="ywL-k5-7cA" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="OeJ-xf-QSO"/>
+                            <constraint firstItem="7Om-bc-vb1" firstAttribute="top" secondItem="6a9-o5-fAL" secondAttribute="bottom" constant="35" id="TIr-b2-erG"/>
                             <constraint firstItem="6a9-o5-fAL" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Zso-3A-Erb"/>
                             <constraint firstItem="ywL-k5-7cA" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="eLz-v8-dhQ"/>
                             <constraint firstItem="ywL-k5-7cA" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="mqL-Et-1vw"/>
@@ -47,6 +59,7 @@
                     </view>
                     <connections>
                         <outlet property="mapView" destination="ywL-k5-7cA" id="fWv-8W-J6H"/>
+                        <outlet property="transpoInfor" destination="7Om-bc-vb1" id="cZp-Kx-ozF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
