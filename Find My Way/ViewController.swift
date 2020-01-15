@@ -18,6 +18,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var toCoordinate = CLLocationCoordinate2D()
     var isCoordinatesSet : Bool = false
     var currSpan : Double = 0.05
+    var currRegion = MKCoordinateRegion()
     
 //    var zoomingIn = false
 //    var zoomingAnnotation = MKAnnotation()
@@ -154,6 +155,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         self.present(alertController, animated: true, completion: nil)
     }
     
+    @IBAction func fmw(_ sender: UIButton) {
+        mapView.setRegion(self.currRegion, animated: true)
+    }
     @IBAction func findmyway(_ sender: UIButton) {
         print("DEBUG: Find My Way!")
         
@@ -188,6 +192,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         
         let region = MKCoordinateRegion(center: location, span: span)
+        currRegion = region
         mapView.setRegion(region, animated: true)
         
         // Print user location coordinates
